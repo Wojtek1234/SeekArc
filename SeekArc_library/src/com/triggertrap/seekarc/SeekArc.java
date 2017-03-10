@@ -27,8 +27,10 @@ import android.content.Context;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.RectF;
+import android.graphics.SweepGradient;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -70,7 +72,7 @@ public class SeekArc extends View {
 	/**
 	 * The width of the progress line for this SeekArc
 	 */
-	private int mProgressWidth = 4;
+	private int mProgressWidth = 20;
 	
 	/**
 	 * The Width of the background arc for the SeekArc 
@@ -80,27 +82,27 @@ public class SeekArc extends View {
 	/**
 	 * The Angle to start drawing this Arc from
 	 */
-	private int mStartAngle = 0;
+	private int mStartAngle = 60;
 	
 	/**
 	 * The Angle through which to draw the arc (Max is 360)
 	 */
-	private int mSweepAngle = 360;
+	private int mSweepAngle = 240;
 	
 	/**
 	 * The rotation of the SeekArc- 0 is twelve o'clock
 	 */
-	private int mRotation = 0;
+	private int mRotation = 180;
 	
 	/**
 	 * Give the SeekArc rounded edges
 	 */
-	private boolean mRoundedEdges = false;
+	private boolean mRoundedEdges = true;
 	
 	/**
 	 * Enable touch inside the SeekArc
 	 */
-	private boolean mTouchInside = true;
+	private boolean mTouchInside = false;
 	
 	/**
 	 * Will the progress increase clockwise or anti-clockwise
@@ -256,15 +258,28 @@ public class SeekArc extends View {
 		//mArcPaint.setAlpha(45);
 
 		mProgressPaint = new Paint();
-		mProgressPaint.setColor(progressColor);
+
+		setGradient();
+
 		mProgressPaint.setAntiAlias(true);
 		mProgressPaint.setStyle(Paint.Style.STROKE);
 		mProgressPaint.setStrokeWidth(mProgressWidth);
-
+		mProgressPaint.setShader( new SweepGradient(0,getMeasuredHeight()/2, Color.RED,Color.WHITE));
 		if (mRoundedEdges) {
 			mArcPaint.setStrokeCap(Paint.Cap.ROUND);
 			mProgressPaint.setStrokeCap(Paint.Cap.ROUND);
 		}
+	}
+
+	private void setGradient() {
+//		int[] colors = {Color.argb(255,222,228,98), Color.argb(255,137,225,115), Color.argb(255,79,217,127)};
+		int startColor = Color.argb(255, 94, 219, 121);
+		int endProgressColor = Color.argb(255, 79, 217, 127);
+		int startProgressColor = Color.argb(255, 222, 228, 98);
+		int middlePorgreessColor = Color.argb(255, 137, 225, 115);
+		int[] colors = {startColor,endProgressColor,startProgressColor,middlePorgreessColor,startColor};
+		float[] positions = {0/360f, 30f/360f,150f/360f,270f/360f, 360/360f};
+		mProgressPaint.setShader( new SweepGradient(getMeasuredWidth()/2,getMeasuredHeight()/2,colors,positions));
 	}
 
 	@Override
@@ -314,6 +329,7 @@ public class SeekArc extends View {
 		mThumbYPos = (int) (mArcRadius * Math.sin(Math.toRadians(arcStart)));
 		
 		setTouchInSide(mTouchInside);
+
 		super.onMeasure(widthMeasureSpec, heightMeasureSpec);
 	}
 
@@ -431,7 +447,7 @@ public class SeekArc extends View {
 	}
 	
 	private void updateProgress(int progress, boolean fromUser) {
-
+		setGradient();
 		if (progress == INVALID_PROGRESS_VALUE) {
 			return;
 		}
@@ -563,7 +579,7 @@ public class SeekArc extends View {
 	}
 
 	public void setProgressColor(int color) {
-		mProgressPaint.setColor(color);
+//		mProgressPaint.setColor(color);
 		invalidate();
 	}
 

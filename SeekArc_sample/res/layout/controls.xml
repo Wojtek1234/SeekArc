@@ -98,7 +98,7 @@
             android:id="@+id/arcWidth"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:max="10" />
+            android:max="50" />
     </LinearLayout>
 
     <LinearLayout
@@ -116,7 +116,7 @@
             android:id="@+id/progressWidth"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:max="10" />
+            android:max="50" />
     </LinearLayout>
 
     <LinearLayout
